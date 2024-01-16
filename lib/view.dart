@@ -16,13 +16,6 @@ class view extends StatefulWidget {
 class _viewState extends State<view> {
   // Future
 
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-  }
   Widget build(BuildContext context) {
     data p=ModalRoute.of(context)!.settings.arguments as data;
 
