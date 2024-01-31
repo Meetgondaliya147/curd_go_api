@@ -25,26 +25,45 @@ class demo extends StatefulWidget {
 
 class _demoState extends State<demo> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // data();
-  }
+  bool search=false;
+  String str="";
   final dio = Dio();
-  Future getHttp() async {
-    final response = await dio.get('https://dummyjson.com/products');
+  Future getHttp(String str) async {
+    dynamic response;
+    if(str==""){
+       response = await dio.get('https://dummyjson.com/products');
+    }else{
+       response = await dio.get('https://dummyjson.com/products/search?q=$str');
+    }
     Map m=response.data;
     return m;
   }
-
   @override
 
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.teal.shade50,
-      appBar: AppBar(title: Text("Products"),backgroundColor: Colors.teal),
+      appBar:(search)?AppBar(title: TextField(onChanged: (value) {
+        setState(() {
+          str=value;
+        });
+      },decoration: InputDecoration(hintText: 'Search Product')),actions: [
+        IconButton(onPressed: () {
+          setState(() {
+            search=!search;
+            Navigator.pushNamed(context, "demo");
+          });
+        }, icon: Icon(Icons.cancel_outlined))
+      ],backgroundColor: Colors.teal):
+      AppBar(title: Text("Products"),actions: [
+        IconButton(onPressed: () {
+          setState(() {
+            search=!search;
+          });
+        }, icon: Icon(Icons.search))
+      ],backgroundColor: Colors.teal),
       body:FutureBuilder(
-        future: getHttp(),
+        future: getHttp("$str"),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             Map m = snapshot.data;
